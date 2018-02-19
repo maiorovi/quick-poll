@@ -5,12 +5,14 @@ import org.home.quickpoll.dto.error.ValidationError;
 import org.home.quickpoll.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,13 +47,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity(errorDetail, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException manve,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
         final Function<FieldError, ValidationError> toValidationError = error -> new ValidationError(error.getCode(), messageSource.getMessage(error, null));
 
         final HashMap<String, List<ValidationError>> errorMap = manve.getBindingResult().getFieldErrors()
                 .stream()
-                .collect(groupingBy(error -> error.getField(),
+                .collect(groupingBy(FieldError::getField,
                         HashMap::new,
                         mapping(toValidationError, Collectors.toList())));
 
