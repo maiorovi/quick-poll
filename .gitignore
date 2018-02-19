@@ -27,4 +27,3 @@ nbdist/
 *.iml
 .idea/
 out/
-gradle
