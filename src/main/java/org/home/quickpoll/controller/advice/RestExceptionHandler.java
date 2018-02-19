@@ -3,6 +3,8 @@ package org.home.quickpoll.controller.advice;
 import org.home.quickpoll.dto.error.ErrorDetail;
 import org.home.quickpoll.dto.error.ValidationError;
 import org.home.quickpoll.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,6 +25,12 @@ import static java.util.stream.Collectors.mapping;
 @ControllerAdvice
 public class RestExceptionHandler {
 
+    private MessageSource messageSource;
+
+    public RestExceptionHandler(@Autowired MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException rnfe, HttpServletRequest request) {
         final ErrorDetail errorDetail = ErrorDetail.builder()
@@ -38,7 +46,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException manve, HttpServletRequest request) {
-        final Function<FieldError, ValidationError> toValidationError = error -> new ValidationError(error.getCode(), error.getDefaultMessage());
+        final Function<FieldError, ValidationError> toValidationError = error -> new ValidationError(error.getCode(), messageSource.getMessage(error, null));
 
         final HashMap<String, List<ValidationError>> errorMap = manve.getBindingResult().getFieldErrors()
                 .stream()
