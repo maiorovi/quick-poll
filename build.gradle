@@ -1,0 +1,40 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.9.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'org.home'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	runtime('org.springframework.boot:spring-boot-devtools')
+	compile group: 'com.h2database', name: 'h2', version: '1.4.196'
+	compile group: 'org.mapstruct', name: 'mapstruct-jdk8', version: '1.2.0.Final'
+	compile group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.2.0.Final'
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.9.RELEASE'
+	runtime('mysql:mysql-connector-java')
+	compileOnly('org.projectlombok:lombok')
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
