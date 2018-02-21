@@ -1,9 +1,14 @@
 package org.home.quickpoll.controller;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.home.quickpoll.domain.Poll;
 import org.home.quickpoll.domain.mapper.PollMapper;
 import org.home.quickpoll.dto.PollDto;
+import org.home.quickpoll.dto.error.ErrorDetail;
 import org.home.quickpoll.exception.ResourceNotFoundException;
 import org.home.quickpoll.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
+@Api(value = "polls", description = "Poll Api")
 @Slf4j
 public class PollController {
     private static Function<Long, Supplier<ResourceNotFoundException>> POLL_NOT_FOUND = (pollId) ->
@@ -41,7 +47,10 @@ public class PollController {
     }
 
     @PostMapping(path = "/poll", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createPoll(@Valid @RequestBody PollDto pollDto) {
+    @ApiOperation(value = "Creates a new Poll", notes="The newly created poll Id will be sent in the location response header", response = Void.class)
+    @ApiResponses(value = {@ApiResponse(code=201, message="Poll Created Successfully", response=Void.class),
+            @ApiResponse(code=500, message="Error creating Poll", response=ErrorDetail.class) } )
+    public ResponseEntity<?> createPoll(@Valid @RequestBody PollDto pollDto) {
         log.info("Received following data: {}",  pollDto);
         try {
             Poll poll = pollService.createPoll(pollDto);
@@ -56,6 +65,7 @@ public class PollController {
     }
 
     @GetMapping(path= "/poll", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Return all polls", notes = "Will return all existent polls", response=Poll.class, responseContainer = "List")
     public ResponseEntity<?> getAllPolls() {
 
         try {
