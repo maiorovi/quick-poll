@@ -1,5 +1,6 @@
 package org.home.quickpoll.controller;
 
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.home.quickpoll.domain.Vote;
 import org.home.quickpoll.domain.mapper.VoteMapper;
 import org.home.quickpoll.dto.VoteDto;
@@ -24,6 +25,7 @@ public class VoteController {
     }
 
     @PostMapping(path = "/poll/{pollId}/votes", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "creates a vote for some option of a poll", response = Void.class)
     public ResponseEntity<?> createVote(@RequestBody VoteDto voteDto, @PathVariable("pollId") Long pollId) throws URISyntaxException {
         final Vote createdVote = voteService.createVote(voteDto);
 
@@ -34,6 +36,7 @@ public class VoteController {
     }
 
     @GetMapping(path = "/poll/{pollId}/votes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "creates a vote for some option of a poll", response = VoteDto.class, responseContainer = "List")
     public ResponseEntity<?> getAllVotes(@PathVariable("pollId") Long pollId) {
         return ResponseEntity.ok(voteService.getAllVotes(pollId));
     }
