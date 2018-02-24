@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller;
+package org.home.quickpoll.controller.v1;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;

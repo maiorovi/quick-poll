@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller;
+package org.home.quickpoll.controller.v1;
 
 import org.home.quickpoll.dto.computeresult.VoteResult;
 import org.home.quickpoll.repository.VoteRepository;

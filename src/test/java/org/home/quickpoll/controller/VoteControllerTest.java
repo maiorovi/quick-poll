@@ -1,5 +1,6 @@
 package org.home.quickpoll.controller;
 
+import org.home.quickpoll.controller.v1.VoteController;
 import org.home.quickpoll.domain.mapper.VoteMapper;
 import org.home.quickpoll.service.VoteService;
 import org.junit.Test;
@@ -7,8 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(VoteController.class)

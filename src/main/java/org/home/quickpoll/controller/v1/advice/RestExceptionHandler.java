@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller.advice;
+package org.home.quickpoll.controller.v1.advice;
 
 import org.home.quickpoll.dto.error.ErrorDetail;
 import org.home.quickpoll.dto.error.ValidationError;
