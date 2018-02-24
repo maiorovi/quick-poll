@@ -41,7 +41,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.NOT_FOUND.value())
                 .title("Resource Not Found")
                 .detail(rnfe.getMessage())
-                .developerMesssage(rnfe.getClass().getName())
+                .developerMessage(rnfe.getClass().getName())
                 .build();
 
         return new ResponseEntity(errorDetail, HttpStatus.NOT_FOUND);
@@ -62,7 +62,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(new Date().getTime())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .title("Validation failed")
-                .developerMesssage(manve.getClass().getName())
+                .developerMessage(manve.getClass().getName())
                 .detail("Input validation failed")
                 .errors(errorMap)
                 .build();

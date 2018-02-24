@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("ComputeResultControllerV1")
 public class ComputeResultController {
     private ComputeResultService computeResultService;
 
@@ -17,7 +17,7 @@ public class ComputeResultController {
         this.computeResultService = computeResultService;
     }
 
-    @GetMapping(path = "computeresult")
+    @GetMapping(path = "/v1/computeresult")
     public ResponseEntity<?> computeResult(@RequestParam Long pollId) {
         VoteResult voteResult = computeResultService.getAllVotesCount(pollId);
 

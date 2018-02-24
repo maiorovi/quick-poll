@@ -20,7 +20,7 @@ public class ErrorDetail {
     private int status;
     private String detail;
     private long timestamp;
-    private String developerMesssage;
+    private String developerMessage;
     @Setter(AccessLevel.NONE)
     private Map<String, List<ValidationError>> errors = new HashMap<>();
 

@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller;
+package org.home.quickpoll.controller.v1;
 
 
 import org.assertj.core.util.Sets;
@@ -37,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(PollController.class)
 public class PollControllerTest {
 
+    private static final String URL_PREFIX ="/v1/polls";
+
     @Autowired
     private MockMvc mvc;
 
@@ -50,6 +52,7 @@ public class PollControllerTest {
     public void lookupsPollById() throws Exception {
         final Set<Option> options = Sets.newLinkedHashSet(new Option("option 1"), new Option("option 2"), new Option("option 3"));
         final String question = "What is the sense of life";
+        final String url = URL_PREFIX + "/10";
 
         Poll poll = aPoll(options, question);
         PollDto pollDto = toPollDto(poll);
@@ -59,7 +62,7 @@ public class PollControllerTest {
 
         String expecteJson = "{\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 2\"},{\"value\":\"option 3\"},{\"value\":\"option 1\"}]}";
 
-        mvc.perform(get("/poll/10")
+        mvc.perform(get(url)
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -78,7 +81,7 @@ public class PollControllerTest {
         given(pollService.getAllPolls()).willReturn(newArrayList(pollFirst, pollSecond));
         given(pollMapper.toPollDto(any(Poll.class))).will(invocation -> toPollDto(invocation.getArgumentAt(0, Poll.class)));
 
-        mvc.perform(get("/poll").contentType(APPLICATION_JSON))
+        mvc.perform(get(URL_PREFIX).contentType(APPLICATION_JSON))
      .andExpect(status().isOk())
      .andExpect(content().contentType(APPLICATION_JSON_UTF8))
      .andExpect(content().json(expectedJson));
@@ -88,7 +91,7 @@ public class PollControllerTest {
     public void lookupAllPollsReturnInternalServerErrorStatusWhenExceptionHappened() throws Exception {
         given(pollService.getAllPolls()).willThrow(Exception.class);
 
-        mvc.perform(get("/poll").contentType(APPLICATION_JSON))
+        mvc.perform(get(URL_PREFIX).contentType(APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().json("{\"error\": \"server failed to respond on your request\"}"));
@@ -96,31 +99,35 @@ public class PollControllerTest {
 
     @Test
     public void lookupByIdReturns404WhenPollwithGivenIdDontExist() throws Exception {
+        final String url = URL_PREFIX + "/21";
         given(pollService.getPoll(21L)).willReturn(Optional.empty());
 
-        mvc.perform(get("/poll/21"))
+        mvc.perform(get(url))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void lookupByPollIdReturns400WhenGivenPollIdIsNotNumeric() throws Exception {
-        mvc.perform(get("/poll/abc"))
+        final String url = URL_PREFIX + "/abc";
+        mvc.perform(get(url))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void deleteByIdRequestReturnsNoContentByDefault() throws Exception {
+        final String url = URL_PREFIX + "/12";
         Poll poll = aPoll(Sets.newHashSet(), "Radom question");
 
         given(pollService.getPoll(12L)).willReturn(Optional.of(poll));
 
-        mvc.perform(delete("/poll/12"))
+        mvc.perform(delete(url))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     public void returns400StatusWhenIdForDeleteRequest() throws Exception {
-        mvc.perform(delete("/poll/ad"))
+        final String url = URL_PREFIX + "/ad";
+        mvc.perform(delete(url))
                 .andExpect(status().isBadRequest());
     }
 
@@ -128,7 +135,7 @@ public class PollControllerTest {
     public void returns404WhenIdForDeleteRequestNotFound() throws Exception {
         given(pollService.getPoll(12L)).willReturn(Optional.empty());
 
-        mvc.perform(delete("/poll/12"))
+        mvc.perform(delete(URL_PREFIX + "/12"))
             .andExpect(status().isNotFound());
     }
 
@@ -140,7 +147,7 @@ public class PollControllerTest {
 
         given(pollService.createPoll(any(PollDto.class))).willReturn(poll);
 
-        mvc.perform(post("/poll").contentType(APPLICATION_JSON)
+        mvc.perform(post(URL_PREFIX).contentType(APPLICATION_JSON)
         .content(pollJson))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "poll/1"));
@@ -154,7 +161,7 @@ public class PollControllerTest {
 
         given(pollService.createPoll(any(PollDto.class))).willReturn(poll);
 
-        mvc.perform(post("/poll").contentType(APPLICATION_JSON)
+        mvc.perform(post(URL_PREFIX).contentType(APPLICATION_JSON)
                 .content(pollJson))
                 .andExpect(status().isBadRequest());
     }
@@ -170,7 +177,7 @@ public class PollControllerTest {
         given(pollService.updatePoll(eq(1L), any(PollDto.class))).willReturn(Optional.of(updatedPoll));
         given(pollMapper.toPollDto(updatedPoll)).willReturn(toPollDto(updatedPoll));
 
-        mvc.perform(put("/poll/1").contentType(MediaType.APPLICATION_JSON_VALUE)
+        mvc.perform(put(URL_PREFIX+ "/1").contentType(MediaType.APPLICATION_JSON_VALUE)
         .content(body))
                 .andExpect(status().isOk())
                 .andExpect(content().json(body));
