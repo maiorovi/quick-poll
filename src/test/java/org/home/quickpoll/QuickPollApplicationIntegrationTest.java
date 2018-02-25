@@ -37,7 +37,7 @@ public class QuickPollApplicationIntegrationTest {
         ResponseEntity<Object> responseEntity = restTemplate.postForEntity("/v1/polls", poll, Object.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getHeaders()).contains(entry("Location", Lists.newArrayList("polls/77")));
+        assertThat(responseEntity.getHeaders()).contains(entry("Location", Lists.newArrayList("polls/21")));
     }
 
     @Test
