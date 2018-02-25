@@ -56,7 +56,7 @@ public class PollController {
         try {
             Poll poll = pollService.createPoll(pollDto);
 
-            return ResponseEntity.created(new URI(String.format("poll/%d", poll.getId())))
+            return ResponseEntity.created(new URI(String.format("polls/%d", poll.getId())))
                     .build();
         } catch (Exception ex) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)

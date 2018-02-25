@@ -1,6 +1,7 @@
 package org.home.quickpoll.controller.v2;
 
 
+import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.home.quickpoll.controller.v2.PollController;
 import org.home.quickpoll.domain.Option;
@@ -14,6 +15,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -74,9 +78,9 @@ public class PollControllerTest {
         Poll pollFirst = aPoll(options, question);
         Poll pollSecond = aPoll(options, question);
 
-        String expectedJson = "[{\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 2\"},{\"value\":\"option 3\"},{\"value\":\"option 1\"}]},{\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 2\"},{\"value\":\"option 3\"},{\"value\":\"option 1\"}]}]";
+        String expectedJson = "{\"content\":[{\"id\":10,\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 1\",\"id\":null},{\"value\":\"option 2\",\"id\":null},{\"value\":\"option 3\",\"id\":null}]},{\"id\":10,\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 1\",\"id\":null},{\"value\":\"option 2\",\"id\":null},{\"value\":\"option 3\",\"id\":null}]}],\"totalPages\":1,\"last\":true,\"totalElements\":2,\"size\":0,\"number\":0,\"sort\":null,\"numberOfElements\":2,\"first\":true}";
 
-        given(pollService.getAllPolls()).willReturn(newArrayList(pollFirst, pollSecond));
+        given(pollService.getAllPolls(any(Pageable.class))).willReturn(new PageImpl(Lists.newArrayList(pollFirst, pollSecond)));
         given(pollMapper.toPollDto(any(Poll.class))).will(invocation -> toPollDto(invocation.getArgumentAt(0, Poll.class)));
 
         mvc.perform(get(URL_PREFIX).contentType(APPLICATION_JSON))
@@ -87,7 +91,7 @@ public class PollControllerTest {
 
     @Test
     public void lookupAllPollsReturnInternalServerErrorStatusWhenExceptionHappened() throws Exception {
-        given(pollService.getAllPolls()).willThrow(Exception.class);
+        given(pollService.getAllPolls(any(Pageable.class))).willThrow(Exception.class);
 
         mvc.perform(get(URL_PREFIX).contentType(APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
@@ -148,7 +152,7 @@ public class PollControllerTest {
         mvc.perform(post(URL_PREFIX).contentType(APPLICATION_JSON)
         .content(pollJson))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "poll/1"));
+                .andExpect(header().string("Location", "polls/1"));
     }
 
     @Test
