@@ -12,6 +12,8 @@ import org.home.quickpoll.dto.error.ErrorDetail;
 import org.home.quickpoll.exception.ResourceNotFoundException;
 import org.home.quickpoll.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,13 +64,12 @@ public class PollController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Return all polls", notes = "Will return all existent polls", response=Poll.class, responseContainer = "List")
-    public ResponseEntity<?> getAllPolls() {
-
+    @ApiOperation(value = "Return all polls", notes = "Will return all existent polls", response=PollDto.class, responseContainer = "Page")
+    public ResponseEntity<?> getAllPolls(Pageable pageable) {
         try {
-            List<Poll> allPolls = pollService.getAllPolls();
-            List<PollDto> pollDtos = allPolls.stream().map(pollMapper::toPollDto).collect(Collectors.toList());
-            return ResponseEntity.ok(pollDtos);
+            Page<PollDto> page = pollService.getAllPolls(pageable);
+
+            return ResponseEntity.ok(page);
 
         } catch (Exception ex) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
