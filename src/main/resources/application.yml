@@ -36,7 +36,7 @@ spring:
     password: delphi78
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect

@@ -18,6 +18,7 @@ import java.util.Set;
 public class Poll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "poll_id")
     private long id;
 
     @Column(name = "question")
