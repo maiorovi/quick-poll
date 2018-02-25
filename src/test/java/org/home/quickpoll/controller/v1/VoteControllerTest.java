@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller;
+package org.home.quickpoll.controller.v1;
 
 import org.home.quickpoll.controller.v1.VoteController;
 import org.home.quickpoll.domain.Vote;
