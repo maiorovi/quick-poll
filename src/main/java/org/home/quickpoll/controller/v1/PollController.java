@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller;
+package org.home.quickpoll.controller.v1;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -30,7 +30,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@RestController
+@RestController("PollControllerV1")
+@RequestMapping(path = "/v1/polls")
 @Api(value = "polls", description = "Poll Api")
 @Slf4j
 public class PollController {
@@ -46,7 +47,7 @@ public class PollController {
         this.pollMapper = pollMapper;
     }
 
-    @PostMapping(path = "/poll", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Creates a new Poll", notes="The newly created poll Id will be sent in the location response header", response = Void.class)
     @ApiResponses(value = {@ApiResponse(code=201, message="Poll Created Successfully", response=Void.class),
             @ApiResponse(code=500, message="Error creating Poll", response=ErrorDetail.class) } )
@@ -55,7 +56,7 @@ public class PollController {
         try {
             Poll poll = pollService.createPoll(pollDto);
 
-            return ResponseEntity.created(new URI(String.format("poll/%d", poll.getId())))
+            return ResponseEntity.created(new URI(String.format("polls/%d", poll.getId())))
                     .build();
         } catch (Exception ex) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
@@ -64,7 +65,7 @@ public class PollController {
 
     }
 
-    @GetMapping(path= "/poll", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Return all polls", notes = "Will return all existent polls", response=Poll.class, responseContainer = "List")
     public ResponseEntity<?> getAllPolls() {
 
@@ -79,7 +80,7 @@ public class PollController {
         }
     }
 
-    @GetMapping(path = "/poll/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PollDto> getPollById(@PathVariable("id") Long pollId) {
         return pollService.getPoll(pollId)
                 .map(pollMapper::toPollDto)
@@ -87,7 +88,7 @@ public class PollController {
                 .orElseThrow(POLL_NOT_FOUND.apply(pollId));
     }
 
-    @DeleteMapping(path="/poll/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deletePollById(@PathVariable("id") Long pollId) {
         Function<Poll, ResponseEntity<Object>> deletePoll = poll -> {
             pollService.deletePoll(pollId);
@@ -98,7 +99,7 @@ public class PollController {
                 .map(deletePoll).orElseThrow(POLL_NOT_FOUND.apply(pollId));
     }
 
-    @PutMapping(path = "poll/{id}", produces = APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updatePoll(@PathVariable("id") Long pollId, @RequestBody PollDto pollDto) {
         return pollService.updatePoll(pollId, pollDto)
                 .map(poll -> ResponseEntity.ok(pollMapper.toPollDto(poll)))

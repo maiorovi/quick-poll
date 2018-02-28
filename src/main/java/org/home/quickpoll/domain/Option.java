@@ -15,9 +15,10 @@ import javax.persistence.*;
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "option_id")
     private Long id;
 
-    @Column(name = "value")
+    @Column(name = "option_value")
     @NonNull
     private String value;
 

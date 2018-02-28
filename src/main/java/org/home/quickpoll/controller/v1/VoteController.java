@@ -1,8 +1,10 @@
-package org.home.quickpoll.controller;
+package org.home.quickpoll.controller.v1;
 
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.home.quickpoll.domain.Vote;
 import org.home.quickpoll.domain.mapper.VoteMapper;
 import org.home.quickpoll.dto.VoteDto;
+import org.home.quickpoll.exception.ResourceNotFoundException;
 import org.home.quickpoll.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@RestController
+@RestController("VoteControllerV1")
+@RequestMapping("/v1/polls/{pollId}/votes")
 public class VoteController {
 
     private VoteService voteService;
@@ -23,7 +26,8 @@ public class VoteController {
         this.voteMapper = voteMapper;
     }
 
-    @PostMapping(path = "/poll/{pollId}/votes", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "creates a vote for some option of a poll", response = Void.class)
     public ResponseEntity<?> createVote(@RequestBody VoteDto voteDto, @PathVariable("pollId") Long pollId) throws URISyntaxException {
         final Vote createdVote = voteService.createVote(voteDto);
 
@@ -33,8 +37,13 @@ public class VoteController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping(path = "/poll/{pollId}/votes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "creates a vote for some option of a poll", response = VoteDto.class, responseContainer = "List")
     public ResponseEntity<?> getAllVotes(@PathVariable("pollId") Long pollId) {
+        if (!voteService.pollExists(pollId)) {
+            throw new ResourceNotFoundException("Can`t vote on a non existent poll");
+        }
+
         return ResponseEntity.ok(voteService.getAllVotes(pollId));
     }
 

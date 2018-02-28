@@ -1,12 +1,12 @@
 package org.home.quickpoll.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
 @EqualsAndHashCode
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class VoteDto {
     private Long id;
     private OptionDto option;

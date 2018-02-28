@@ -6,6 +6,8 @@ import org.home.quickpoll.domain.mapper.PollMapper;
 import org.home.quickpoll.dto.PollDto;
 import org.home.quickpoll.repository.PollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,6 +39,13 @@ public class PollService {
         List<Poll> polls = pollRepository.findAll();
 
         return polls;
+    }
+
+    public Page<PollDto> getAllPolls(Pageable pageable) {
+
+        Page<Poll> page = pollRepository.findAll(pageable);
+
+        return page.map(poll -> pollMapper.toPollDto(poll));
     }
 
     public Optional<Poll> getPoll(Long pollId) {

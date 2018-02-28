@@ -34,21 +34,21 @@ public class QuickPollApplicationIntegrationTest {
         final Set<Option> options = Sets.newLinkedHashSet(new Option("option 2"), new Option("option 3"));
         final Poll poll = aPoll(options, "Quick question");
 
-        ResponseEntity<Object> responseEntity = restTemplate.postForEntity("/poll", poll, Object.class);
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity("/v1/polls", poll, Object.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getHeaders()).contains(entry("Location", Lists.newArrayList("poll/3")));
+        assertThat(responseEntity.getHeaders()).contains(entry("Location", Lists.newArrayList("polls/21")));
     }
 
     @Test
     public void queryForAPoll() {
-        final Set<Option> expectedOptions = newHashSet(Lists.newArrayList(new Option("Option 1"), new Option("Option 2"), new Option("Option 3")));
-        Poll expectedPoll = aPoll(expectedOptions, "What is the sense of life");
-        expectedPoll.setId(0);
+        final Set<Option> expectedOptions = newHashSet(Lists.newArrayList(new Option("6"), new Option("8"), new Option("5"), new Option("4")));
+        Poll expectedPoll = aPoll(expectedOptions, "How many rings are on the Olympic flag?");
+        expectedPoll.setId(20);
 
-        Poll poll = restTemplate.getForObject("/poll/1", Poll.class);
+        Poll poll = restTemplate.getForObject("/v1/polls/20", Poll.class);
 
-        assertThat(poll).isEqualTo(expectedPoll);
+        assertThat(poll).isEqualToComparingOnlyGivenFields(expectedPoll, "question", "options");
     }
 
     private Poll aPoll(Set<Option> options, String question) {
