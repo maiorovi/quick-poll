@@ -150,7 +150,7 @@ public class PollControllerTest {
         mvc.perform(post(URL_PREFIX).contentType(APPLICATION_JSON)
         .content(pollJson))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "poll/1"));
+                .andExpect(header().string("Location", "polls/1"));
     }
 
     @Test
