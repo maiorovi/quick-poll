@@ -17,9 +17,10 @@ public class VoteService {
     private PollRepository pollRepository;
     private VoteMapper voteMapper;
 
-    public VoteService(@Autowired VoteRepository voteRepository, @Autowired VoteMapper voteMapper) {
+    public VoteService(@Autowired VoteRepository voteRepository, @Autowired VoteMapper voteMapper,@Autowired PollRepository pollRepository) {
         this.voteMapper = voteMapper;
         this.voteRepository = voteRepository;
+        this.pollRepository = pollRepository;
     }
 
     public Vote createVote(VoteDto voteDto) {

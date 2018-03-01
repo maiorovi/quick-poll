@@ -1,4 +1,4 @@
-package org.home.quickpoll;
+package org.home.quickpoll.config;
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
