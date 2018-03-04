@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController("PollControllerV3")
-@RequestMapping(path = "/v3/polls")
+@RequestMapping(path = {"/v3/polls", "/oauth2/v3/polls"})
 @Api(value = "polls", description = "Poll Api")
 @Slf4j
 public class PollController {
