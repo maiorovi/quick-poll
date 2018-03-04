@@ -1,4 +1,4 @@
-package org.home.quickpoll.controller.v1;
+package org.home.quickpoll.controller.v3;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -12,27 +12,23 @@ import org.home.quickpoll.dto.error.ErrorDetail;
 import org.home.quickpoll.exception.ResourceNotFoundException;
 import org.home.quickpoll.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.net.URI;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@RestController("PollControllerV1")
-@RequestMapping(path = "/v1/polls")
+@RestController("PollControllerV3")
+@RequestMapping(path = {"/v3/polls", "/oauth2/v3/polls"})
 @Api(value = "polls", description = "Poll Api")
 @Slf4j
 public class PollController {
@@ -67,13 +63,12 @@ public class PollController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Return all polls", notes = "Will return all existent polls", response=Poll.class, responseContainer = "List")
-    public ResponseEntity<?> getAllPolls() {
-
+    @ApiOperation(value = "Return all polls", notes = "Will return all existent polls", response=PollDto.class, responseContainer = "Page")
+    public ResponseEntity<?> getAllPolls(Pageable pageable) {
         try {
-            List<Poll> allPolls = pollService.getAllPolls();
-            List<PollDto> pollDtos = allPolls.stream().map(pollMapper::toPollDto).collect(Collectors.toList());
-            return ResponseEntity.ok(pollDtos);
+            Page<PollDto> page = pollService.getAllPolls(pageable);
+
+            return ResponseEntity.ok(page);
 
         } catch (Exception ex) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
@@ -90,6 +85,7 @@ public class PollController {
     }
 
     @DeleteMapping(path="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> deletePollById(@PathVariable("id") Long pollId) {
         Function<Poll, ResponseEntity<Object>> deletePoll = poll -> {
             pollService.deletePoll(pollId);

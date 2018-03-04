@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(PollController.class)
+@WebMvcTest(value = PollController.class, secure = false)
 public class PollControllerTest {
 
     private static final String URL_PREFIX ="/v1/polls";
