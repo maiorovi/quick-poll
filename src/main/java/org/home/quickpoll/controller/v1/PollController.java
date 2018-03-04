@@ -12,23 +12,20 @@ import org.home.quickpoll.dto.error.ErrorDetail;
 import org.home.quickpoll.exception.ResourceNotFoundException;
 import org.home.quickpoll.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.net.URI;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController("PollControllerV1")
@@ -37,7 +34,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class PollController {
     private static Function<Long, Supplier<ResourceNotFoundException>> POLL_NOT_FOUND = (pollId) ->
-        () -> {throw new ResourceNotFoundException("Poll with id " + pollId + " not found!" );};
+        () -> {throw new ResourceNotFoundException("Poll with pollId " + pollId + " not found!" );};
 
 
     private PollService pollService;
@@ -57,7 +54,7 @@ public class PollController {
         try {
             Poll poll = pollService.createPoll(pollDto);
 
-            return ResponseEntity.created(new URI(String.format("polls/%d", poll.getId())))
+            return ResponseEntity.created(new URI(String.format("polls/%d", poll.getPollId())))
                     .build();
         } catch (Exception ex) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
@@ -72,7 +69,7 @@ public class PollController {
 
         try {
             List<Poll> allPolls = pollService.getAllPolls();
-            List<PollDto> pollDtos = allPolls.stream().map(pollMapper::toPollDto).collect(Collectors.toList());
+            List<PollDto> pollDtos = allPolls.stream().map(poll -> updatePollResourceWithLinks(pollMapper.toPollDto(poll))).collect(Collectors.toList());
             return ResponseEntity.ok(pollDtos);
 
         } catch (Exception ex) {
@@ -105,5 +102,14 @@ public class PollController {
         return pollService.updatePoll(pollId, pollDto)
                 .map(poll -> ResponseEntity.ok(pollMapper.toPollDto(poll)))
                 .orElseThrow(POLL_NOT_FOUND.apply(pollId));
+    }
+
+
+    private PollDto updatePollResourceWithLinks(PollDto pollDto) {
+        pollDto.add(linkTo(methodOn(PollController.class).getAllPolls()).slash(pollDto.getPollId()).withSelfRel());
+        pollDto.add(linkTo(methodOn(VoteController.class).getAllVotes(pollDto.getPollId())).withRel("votes"));
+        pollDto.add(linkTo(methodOn(ComputeResultController.class).computeResult(pollDto.getPollId())).withRel("compute-result"));
+
+        return pollDto;
     }
 }

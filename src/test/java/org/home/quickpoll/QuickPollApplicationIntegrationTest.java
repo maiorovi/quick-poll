@@ -46,7 +46,7 @@ public class QuickPollApplicationIntegrationTest {
     public void queryForAPoll() {
         final Set<Option> expectedOptions = newHashSet(Lists.newArrayList(new Option("6"), new Option("8"), new Option("5"), new Option("4")));
         Poll expectedPoll = aPoll(expectedOptions, "How many rings are on the Olympic flag?");
-        expectedPoll.setId(20);
+        expectedPoll.setPollId(20);
 
         Poll poll = restTemplate.getForObject("/v1/polls/20", Poll.class);
 
@@ -55,7 +55,7 @@ public class QuickPollApplicationIntegrationTest {
 
     private Poll aPoll(Set<Option> options, String question) {
         return Poll.builder()
-                .id(10)
+                .pollId(10)
                 .question(question)
                 .options(options)
                 .build();

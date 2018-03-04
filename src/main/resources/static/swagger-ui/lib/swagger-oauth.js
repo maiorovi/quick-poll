@@ -41,7 +41,7 @@ function handleLogin() {
     popup = popupDialog.find('ul.api-popup-scopes').empty();
     for (i = 0; i < scopes.length; i ++) {
       scope = scopes[i];
-      str = '<li><input type="checkbox" id="scope_' + i + '" scope="' + scope.scope + '"/>' + '<label for="scope_' + i + '">' + scope.scope;
+      str = '<li><input type="checkbox" pollId="scope_' + i + '" scope="' + scope.scope + '"/>' + '<label for="scope_' + i + '">' + scope.scope;
       if (scope.description) {
         str += '<br/><span class="api-scope-desc">' + scope.description + '</span>';
       }
@@ -133,7 +133,7 @@ function initOAuth(opts) {
   appName = (o.appName||errors.push("missing appName"));
   popupMask = (o.popupMask||$('#api-common-mask'));
   popupDialog = (o.popupDialog||$('.api-popup-dialog'));
-  clientId = (o.clientId||errors.push("missing client id"));
+  clientId = (o.clientId||errors.push("missing client pollId"));
   realm = (o.realm||errors.push("missing realm"));
 
   if(errors.length > 0){

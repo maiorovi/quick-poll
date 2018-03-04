@@ -2,7 +2,6 @@ package org.home.quickpoll.controller.v1;
 
 
 import org.assertj.core.util.Sets;
-import org.home.quickpoll.controller.v1.PollController;
 import org.home.quickpoll.domain.Option;
 import org.home.quickpoll.domain.Poll;
 import org.home.quickpoll.domain.mapper.PollMapper;
@@ -143,7 +142,7 @@ public class PollControllerTest {
     public void addPollReturnsCreatedWhenSuccessful() throws Exception {
         String pollJson = "{\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 2\"},{\"value\":\"option 3\"},{\"value\":\"option 1\"}]}";
 
-        Poll poll = Poll.builder().id(1).build();
+        Poll poll = Poll.builder().pollId(1).build();
 
         given(pollService.createPoll(any(PollDto.class))).willReturn(poll);
 
@@ -157,7 +156,7 @@ public class PollControllerTest {
     public void addPollReturnsBadRequestOnIncorrectJsonInput() throws Exception {
         String pollJson = "{\"question\":\"What is the sense of life\",\"options\":[{value: fds}]}";
 
-        Poll poll = Poll.builder().id(1).build();
+        Poll poll = Poll.builder().pollId(1).build();
 
         given(pollService.createPoll(any(PollDto.class))).willReturn(poll);
 
@@ -170,7 +169,7 @@ public class PollControllerTest {
     public void updatePollReturnsUpdatedPoll() throws Exception {
         final Set<Option> options = Sets.newLinkedHashSet(new Option("option 2"), new Option("option 3"));
         final Poll updatedPoll = aPoll(options,"my question 3");
-        updatedPoll.setId(1);
+        updatedPoll.setPollId(1);
 
         final String body = "{\"question\": \"my question 3\", \"options\":[{\"value\": \"option 2\"}, {\"value\": \"option 3\"}]}";
 
@@ -185,7 +184,7 @@ public class PollControllerTest {
 
     private Poll aPoll(Set<Option> options, String question) {
         return Poll.builder()
-                .id(10)
+                .pollId(10)
                 .question(question)
                 .options(options)
                 .build();

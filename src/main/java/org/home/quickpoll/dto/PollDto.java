@@ -2,6 +2,7 @@ package org.home.quickpoll.dto;
 
 import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -10,7 +11,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PollDto {
+public class PollDto extends ResourceSupport {
+    private long pollId;
     @NotEmpty
     private String question;
     @Singular

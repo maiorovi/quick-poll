@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -34,7 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class PollController {
     private static Function<Long, Supplier<ResourceNotFoundException>> POLL_NOT_FOUND = (pollId) ->
-        () -> {throw new ResourceNotFoundException("Poll with id " + pollId + " not found!" );};
+        () -> {throw new ResourceNotFoundException("Poll with pollId " + pollId + " not found!" );};
 
 
     private PollService pollService;
@@ -54,7 +52,7 @@ public class PollController {
         try {
             Poll poll = pollService.createPoll(pollDto);
 
-            return ResponseEntity.created(new URI(String.format("polls/%d", poll.getId())))
+            return ResponseEntity.created(new URI(String.format("polls/%d", poll.getPollId())))
                     .build();
         } catch (Exception ex) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)

@@ -42,7 +42,7 @@ public class VoteControllerTest {
 
     @Test
     public void createsVote() throws Exception {
-        String jsonVote = "{\"option\": {\"id\": 1, \"value\": \"option1\"} }";
+        String jsonVote = "{\"option\": {\"pollId\": 1, \"value\": \"option1\"} }";
         given(voteService.createVote(any(VoteDto.class))).willReturn(savedVote);
         savedVote.setId(1L);
 
@@ -59,7 +59,7 @@ public class VoteControllerTest {
 
         final VoteDto voteDto = new VoteDto(1l, option);
 
-        String expectedResponse = "[{ \"id\": 1, \"option\": { \"value\": \"option1\", \"id\": 1}}]";
+        String expectedResponse = "[{ \"pollId\": 1, \"option\": { \"value\": \"option1\", \"pollId\": 1}}]";
 
         given(voteService.getAllVotes(1l)).willReturn(newArrayList(voteDto));
 

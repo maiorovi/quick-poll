@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"poll", "id"})
+@EqualsAndHashCode(exclude = {"poll", "pollId"})
 @Table(name = "opt")
 @ToString(exclude = {"poll"})
 public class Option {

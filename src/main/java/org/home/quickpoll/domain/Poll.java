@@ -19,7 +19,7 @@ public class Poll {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "poll_id")
-    private long id;
+    private long pollId;
 
     @Column(name = "question")
     private String question;
