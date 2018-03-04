@@ -18,9 +18,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.Base64Utils;
 
 import java.util.Optional;
 import java.util.Set;
@@ -36,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(PollController.class)
+@WebMvcTest(value = PollController.class, secure = false)
 public class PollControllerTest {
 
     private static final String URL_PREFIX ="/v2/polls";
@@ -65,6 +68,8 @@ public class PollControllerTest {
         String expecteJson = "{\"question\":\"What is the sense of life\",\"options\":[{\"value\":\"option 2\"},{\"value\":\"option 3\"},{\"value\":\"option 1\"}]}";
 
         mvc.perform(get(url)
+//                .header(HttpHeaders.AUTHORIZATION,
+//                        "Basic " + Base64Utils.encodeToString("user:secret".getBytes()))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
