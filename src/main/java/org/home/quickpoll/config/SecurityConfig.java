@@ -34,8 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .realmName("Quick Poll")
                 .and()
                 .csrf()
-                .disable()
-                .anonymous().disable();
+                .disable();
     }
 
     @Override

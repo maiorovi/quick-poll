@@ -19,7 +19,6 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     public void configure(HttpSecurity http) throws Exception {
         http.requestMatchers()
                 .and()
-                .authorizeRequests().antMatchers("/oauth2/v3/polls/**").authenticated()
-                .and().anonymous().disable();
+                .authorizeRequests().antMatchers("/oauth2/v3/polls/**").authenticated();
     }
 }
